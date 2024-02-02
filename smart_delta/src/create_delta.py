@@ -4,7 +4,7 @@ from smart_delta.src import apply_delta, delta_utils
 from smart_delta.src.apply_delta import parse_delta_steps
 from smart_delta.src.delta_utils import *
 
-import re
+
 def range_diff(data_0, data_1):
     length_for_fitting = 3
     length_for_diff = 50
@@ -28,7 +28,7 @@ def range_diff(data_0, data_1):
 
 def create_delta_step(sign, index, payload, second_payload: Optional[str] = None):
     for possible_sign in SAFE_MARKS:
-        payload = replace_signs(payload, possible_sign, UNMARK_MARK+possible_sign)
+        payload = replace_signs(payload, possible_sign, UNMARK_MARK + possible_sign)
         if second_payload:
             second_payload = second_payload.replace(possible_sign, UNMARK_MARK + possible_sign)
     if second_payload:
