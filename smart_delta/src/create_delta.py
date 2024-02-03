@@ -1,8 +1,9 @@
 from typing import List, Optional
 
-from smart_delta.src import apply_delta, delta_utils
+from smart_delta.src import apply_delta, delta_utils, INSERTION_MARK, DELETION_MARK, REPLACEMENT_MARK, \
+    INDEX_PAYLOAD_SEPERATOR_MARK, REPLACEMENT_SPLIT_MARK, SAFE_MARKS, REGULAR_MARKS, UNMARK_MARK
 from smart_delta.src.apply_delta import parse_delta_steps
-from smart_delta.src.delta_utils import *
+from smart_delta.src.delta_utils import replace_signs
 
 
 def range_diff(data_0, data_1):
@@ -27,7 +28,7 @@ def range_diff(data_0, data_1):
 
 
 def create_delta_step(sign, index, payload, second_payload: Optional[str] = None):
-    for possible_sign in SAFE_MARKS:
+    for possible_sign in ["\\"] + REGULAR_MARKS:
         payload = replace_signs(payload, possible_sign, UNMARK_MARK + possible_sign)
         if second_payload:
             second_payload = second_payload.replace(possible_sign, UNMARK_MARK + possible_sign)

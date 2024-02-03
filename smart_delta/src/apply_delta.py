@@ -1,4 +1,4 @@
-from smart_delta.src import delta
+from smart_delta.src import delta, INSERTION_MARK, REPLACEMENT_MARK, DELETION_MARK
 from smart_delta.src.delta_utils import *
 
 

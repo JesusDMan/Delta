@@ -1,5 +1,7 @@
 from typing import Optional
 
+from smart_delta.src import REPLACEMENT_MARK, REPLACEMENT_SPLIT_MARK, INDEX_PAYLOAD_SEPERATOR_MARK, UNMARK_MARK, \
+    REGULAR_MARKS
 from smart_delta.src.delta_utils import *
 
 
