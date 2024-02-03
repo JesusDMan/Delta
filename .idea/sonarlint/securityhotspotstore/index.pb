@@ -46,3 +46,22 @@ P
  smart_delta/tests/test_system.py,2\2\2200858d2d34605ccd50b84a0aa671e8bcac5ac8
 U
 %smart_delta/tests/test_delta_utils.py,5\0\50abe7c34013a6b0b83c03f0bedf050513c30949
+P
+ smart_delta/bin/create_delta2.py,f\0\f00280f3fa104bf924a0a467bcaf32c501d9b0be
+P
+ smart_delta/bin/create_delta_.py,5\2\52933f16d10fcc1c85289e1fc5f33a75c80f557d
+E
+smart_delta/bin/a.txt,8\6\86860674c56556fc4a745b8993250c8f88bbd162
+E
+smart_delta/bin/b.txt,2\6\266aef288315db552149dd9065b1c9bdeef9bca5
+9
+	new_delta,1\2\125e43da4b4d33169ee9ff14470d7d0146d16e75
+N
+smart_delta/bin/apply_delta.py,3\c\3c443538ea02d3a799920890b5b05bd934398c86
+:
+
+setup__.py,4\8\480838978bad7e3d5ad1ba681d852598abc2a5ca
+3
+new,c\2\c2a6b03f190dfb2b4aa91f8af8d477a9bc3401dc
+5
+AHHHH,4\4\444d634e8619bb2997cfe3c4ad050486aa3f9e57

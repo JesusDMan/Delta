@@ -8,4 +8,8 @@ setup(
     long_description=open("README.md").read(),
     url="https://github.com/JesusDMan/BackupSyncer",
     author="JesusDMan",
+    entry_points={"console_scripts": [
+        "delta-gen = smart_delta.bin.create_delta:main",
+        "delta-apply = smart_delta.bin.apply_delta:main"
+    ]},
 )
