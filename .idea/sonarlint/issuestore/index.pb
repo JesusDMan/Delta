@@ -36,3 +36,13 @@ P
  smart_delta/src/delta_applier.py,4\4\440d49ce00dbe55ccabeb7156866259c5224ff8a
 R
 "smart_delta/src/delta_generator.py,f\6\f6f385f44c718d6bc13d8d94c1541a0916599283
+W
+'smart_delta/tests/test_delta_element.py,8\e\8ea4c1bde6ff142153bfde62d2c6ded5a225d744
+Y
+)smart_delta/tests/test_delta_generator.py,f\4\f4f938680ae757184b437546beeb82775b88cb33
+W
+'smart_delta/tests/test_delta_applier.py,4\d\4d8c62a07808c138b0ec3ced9ff626a1e618b86e
+P
+ smart_delta/tests/test_system.py,2\2\2200858d2d34605ccd50b84a0aa671e8bcac5ac8
+U
+%smart_delta/tests/test_delta_utils.py,5\0\50abe7c34013a6b0b83c03f0bedf050513c30949

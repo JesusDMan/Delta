@@ -82,7 +82,7 @@ class DeltaElement:
         return data_with_delta, offset
 
 
-def parse_str_delta(str_delta: str) -> DeltaElement:
+def parse_str_delta_element(str_delta: str) -> DeltaElement:
     sign = str_delta[0]
     index, payload = str_delta[1:].split(INDEX_PAYLOAD_SEPERATOR_MARK, 1)
     index = int(index)

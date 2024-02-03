@@ -1,5 +1,5 @@
 from smart_delta.src import UNMARK_MARK, INSERTION_MARK, REPLACEMENT_MARK, DELETION_MARK
-from smart_delta.src.delta_element import parse_str_delta
+from smart_delta.src.delta_element import parse_str_delta_element
 from smart_delta.src.delta_utils import find_system_marks
 
 
@@ -17,7 +17,7 @@ class DeltaApplier:
         offset = 0
         data_with_delta = base_data
         for delta_step in delta_steps:
-            delta_ = parse_str_delta(delta_step)
+            delta_ = parse_str_delta_element(delta_step)
             data_with_delta, offset = delta_.apply_on_data(base_data=data_with_delta, apply_on_reverse=reverse_delta,
                                                            offset=offset)
         return data_with_delta
