@@ -36,7 +36,7 @@ class DeltaElement:
                 fixed_second_payload = fixed_second_payload.replace(possible_sign, UNMARK_MARK + possible_sign)
         return fixed_payload, fixed_second_payload
 
-    def parse_payloads(self) -> Tuple[str, Optional[str]]:
+    def parse_payloads(self) -> List[str]:
         if self.sign == REPLACEMENT_MARK:
             payloads = list(split_payload(self.payload))
         else:
