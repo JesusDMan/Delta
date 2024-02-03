@@ -13,5 +13,5 @@ from smart_delta.src.delta_generator import DeltaGenerator
 def test_delta_applier_applies_delta_correctly(data_1, data_2):
     delta_steps = str(DeltaGenerator(data_1, data_2))
 
-    assert DeltaApplier(delta_steps).apply_string_delta(data_1) == data_2
-    assert DeltaApplier(delta_steps).apply_string_delta(data_2, reverse_delta=True) == data_1
+    assert DeltaApplier(delta_steps).apply_on_data(data_1) == data_2
+    assert DeltaApplier(delta_steps).apply_on_data(data_2, reverse_delta=True) == data_1

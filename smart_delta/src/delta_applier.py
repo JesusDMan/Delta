@@ -1,4 +1,4 @@
-from smart_delta.src import UNMARK_MARK, INSERTION_MARK, REPLACEMENT_MARK, DELETION_MARK
+from smart_delta.src import INSERTION_MARK, REPLACEMENT_MARK, DELETION_MARK
 from smart_delta.src.delta_element import parse_str_delta_element
 from smart_delta.src.delta_utils import find_system_marks
 
@@ -12,7 +12,7 @@ class DeltaApplier:
         for i in range(len(indices) - 1):
             self.delta_elements.append(delta_string[indices[i]: indices[i + 1]])
 
-    def apply_string_delta(self, base_data, reverse_delta=False):
+    def apply_on_data(self, base_data, reverse_delta=False):
         delta_steps = self.delta_elements
         offset = 0
         data_with_delta = base_data

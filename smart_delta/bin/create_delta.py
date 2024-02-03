@@ -20,10 +20,10 @@ def main():
     delta_ = str(delta_)
     print(repr(delta_))
 
-    print(apply_delta.apply_string_delta(data_1, delta_))
+    print(apply_delta.apply_on_data(data_1, delta_))
     print(data_2)
     print("-" * 99)
-    print(apply_delta.apply_string_delta(data_2, delta_, reverse_delta=True))
+    print(apply_delta.apply_on_data(data_2, delta_, reverse_delta=True))
     print(data_1)
 
 
