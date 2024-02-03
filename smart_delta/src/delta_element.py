@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Tuple, List
 
 from smart_delta.src import REPLACEMENT_MARK, REPLACEMENT_SPLIT_MARK, INDEX_PAYLOAD_SEPERATOR_MARK, UNMARK_MARK, \
     REGULAR_MARKS, DELETION_MARK, INSERTION_MARK
@@ -11,27 +11,24 @@ class DeltaElement:
         self.index = index
         self.payload = payload
         self.second_payload = second_payload
+        self.is_replacement = self.sign == REPLACEMENT_MARK
 
         if parsing_needed:
             self.payload, self.second_payload = self.parse_payloads()
 
-    @property
-    def is_replacement(self):
-        return self.sign == REPLACEMENT_MARK
-
-    def __str__(self):
+    def __str__(self) -> str:
         payload, second_payload = self.fix_payloads()
         if self.is_replacement:
             payload += f"{REPLACEMENT_SPLIT_MARK}{second_payload}"
         return f"{self.sign}{self.index}{INDEX_PAYLOAD_SEPERATOR_MARK}{payload}"
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         if (type(
                 other) is DeltaElement and other.sign == self.sign and other.index == self.index and other.payload == self.payload and other.second_payload == self.second_payload):
             return True
         return False
 
-    def fix_payloads(self):
+    def fix_payloads(self) -> Tuple[str, str]:
         fixed_payload, fixed_second_payload = self.payload, self.second_payload
         for possible_sign in [UNMARK_MARK] + REGULAR_MARKS:
             fixed_payload = replace_signs(fixed_payload, possible_sign, UNMARK_MARK + possible_sign)
@@ -39,7 +36,7 @@ class DeltaElement:
                 fixed_second_payload = fixed_second_payload.replace(possible_sign, UNMARK_MARK + possible_sign)
         return fixed_payload, fixed_second_payload
 
-    def parse_payloads(self):
+    def parse_payloads(self) -> Tuple[str, Optional[str]]:
         if self.sign == REPLACEMENT_MARK:
             payloads = list(split_payload(self.payload))
         else:
@@ -52,7 +49,7 @@ class DeltaElement:
             payloads[i] = payload.replace(UNMARK_MARK + UNMARK_MARK, UNMARK_MARK)
         return payloads
 
-    def apply_on_data(self, base_data: str, apply_on_reverse=False, offset=0):
+    def apply_on_data(self, base_data: str, apply_on_reverse=False, offset=0) -> Tuple[str, int]:
         data_with_delta = base_data
         sign = self.sign
         index = self.index

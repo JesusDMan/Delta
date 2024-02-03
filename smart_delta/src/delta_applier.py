@@ -4,7 +4,7 @@ from smart_delta.src.delta_utils import find_system_marks
 
 
 class DeltaApplier:
-    def __init__(self, delta_string):
+    def __init__(self, delta_string: str):
         self.delta_elements = []
         indices = find_system_marks(delta_string, (INSERTION_MARK, REPLACEMENT_MARK, DELETION_MARK))
         indices.append(len(delta_string))
@@ -12,7 +12,7 @@ class DeltaApplier:
         for i in range(len(indices) - 1):
             self.delta_elements.append(delta_string[indices[i]: indices[i + 1]])
 
-    def apply_on_data(self, base_data, reverse_delta=False):
+    def apply_on_data(self, base_data: str, reverse_delta: bool = False) -> str:
         delta_steps = self.delta_elements
         offset = 0
         data_with_delta = base_data
@@ -22,7 +22,7 @@ class DeltaApplier:
                                                            offset=offset)
         return data_with_delta
 
-    def __str__(self):
+    def __str__(self) -> str:
         delta_string = ""
         for delta_step in self.delta_elements:
             delta_string += str(delta_step)

@@ -1,12 +1,14 @@
+from typing import Tuple, Iterable, List
+
 from smart_delta.src import (UNMARK_MARK, REPLACEMENT_SPLIT_MARK, )
 
 
-def print_data(data):
+def print_data(data: str) -> None:
     print(" ".join([str(i) for i in range(len(data))]))
     print("".join([data[i] + " " * len(str(i)) for i in range(len(data))]))
 
 
-def find_system_marks(string, marks):
+def find_system_marks(string: str, marks: Iterable[str]) -> List[str]:
     indices = []
     is_after_mark = False
 
@@ -25,12 +27,12 @@ def find_system_marks(string, marks):
     return indices
 
 
-def split_payload(payload: str):
+def split_payload(payload: str) -> Tuple[str, str]:
     split_index = find_system_marks(payload, (REPLACEMENT_SPLIT_MARK,))[0]
     return payload[:split_index], payload[split_index + 1:]
 
 
-def replace_signs(data, to_replace, replace_with):
+def replace_signs(data: str, to_replace: str, replace_with: str) -> str:
     is_after_mark = False
     new_data = data
     for index, char in enumerate(data):

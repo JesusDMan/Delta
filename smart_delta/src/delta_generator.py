@@ -1,3 +1,5 @@
+from typing import Tuple, List
+
 from smart_delta.src import (INSERTION_MARK, DELETION_MARK, REPLACEMENT_MARK, )
 from smart_delta.src.delta_element import DeltaElement
 
@@ -10,7 +12,7 @@ class DeltaGenerator:
         self.max_diff_length = 50
         self.delta_elements = self.generate_delta()
 
-    def generate_delta(self):
+    def generate_delta(self) -> List[DeltaElement]:
         diff_beginning_index_0 = None
         delta_steps = []
 
@@ -21,7 +23,7 @@ class DeltaGenerator:
                 diff_beginning_index_0 = index_0
                 diff_beginning_index_1 = index_1
                 diff_ending_0, diff_ending_1 = self.range_diff(self.data_0[diff_beginning_index_0:],
-                                                          self.data_1[diff_beginning_index_1:])
+                                                               self.data_1[diff_beginning_index_1:])
                 diff_ending_0 += diff_beginning_index_0
                 diff_ending_1 += diff_beginning_index_1
 
@@ -60,7 +62,7 @@ class DeltaGenerator:
 
         return delta_steps
 
-    def range_diff(self, data_0, data_1):
+    def range_diff(self, data_0: str, data_1: str) -> Tuple[int, int]:
         fit_index_0, fit_index_1 = len(data_0), len(data_1)
         index_0_for_0, index_1_for_0 = 0, 0
         res = False
