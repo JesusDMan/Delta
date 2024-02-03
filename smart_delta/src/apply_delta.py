@@ -1,6 +1,7 @@
-from typing import Tuple
 from smart_delta.src import delta
 from smart_delta.src.delta_utils import *
+
+
 
 def parse_delta_steps(delta_string):
     delta_steps = []
@@ -25,10 +26,7 @@ def parse_delta_steps(delta_string):
     return delta_steps
 
 
-
-
-
-def apply_delta_step(base_data, delta, reverse_delta=False, offset=0):
+def apply_delta_step(base_data: str, delta, reverse_delta=False, offset=0):
     data_with_delta = base_data
     sign = delta.sign
     index = delta.index
@@ -62,7 +60,6 @@ def apply_string_delta(base_data, delta_string, reverse_delta=False):
     data_with_delta = base_data
     for delta_step in delta_steps:
         delta_ = delta.parse_str_delta(delta_step)
-        # print("===", data_with_delta, "|", str(smart_delta))
         data_with_delta, offset = apply_delta_step(base_data=data_with_delta,
                                                    delta=delta_, reverse_delta=reverse_delta,
                                                    offset=offset)

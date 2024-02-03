@@ -4,28 +4,33 @@ from smart_delta.src.create_delta import *
 
 
 @pytest.mark.parametrize(
-    "data_1,data_2",
+    "data_0,data_1,res",
     [
-        ("kaka", "kaka"),
-        ("kiki", "kaka"),
-        ("Hi! This is greate", "kiki"),
-        ("kiki", "Hi! This is greate"),
-        ("kaka+", "kiki"),
-        ("kaka", "kiki+"),
-        ("kaka-", "kiki"),
-        ("kaka", "kiki-"),
-        ("kaka-", "kiki+"),
-        ("kaka\\-", "kiki"),
-        ("k+-\\|-+$\\$aka", "kiki+"),
+        ("Hi! Duck", "Hi! Duck", []),
+        ("Hi! lala Duck Gargamel", "Hi! Duck", ["-4|lala ", "-8| Gargamel"]),
+        ("Hi! Duck", "Hi! lili Duck", ["+4|lili "]),
+        ("Hi! lala Duck", "Hi! ronron Duck", ["%4|lala$ronron"]),
         (
-            "ka=-=-00-43=-=-3=-=-=-=-=+_)+_489whgjh;lknf;gjkl;lks;glkf;lknaw4987098742p;ohasg=-=-=-=-+-+_+$_+$_+(*$_ka",
-            "kiki",
+            "Hi! lala Duck Gargamel",
+            "Hi! Duck shish gon",
+            ["-4|lala ", "%9|Gargamel$shish gon"],
+        ),
+        ("Hi! \+-|%$ Duck", "Hi! Duck", ["-4|\\\\\\+\\-\\|\\%\\$ "]),
+        ("Hi! Duck", "Hi! \+-|%$ Duck", ["+4|\\\\\\+\\-\\|\\%\\$ "]),
+        ("Hi! Duck", "Hi!f fDuckf f", ["%3| $f f", "+10|f f"]),
+        (
+            "Hello! My name is John Cena. %, + and - are signs used for parsing the delta. In addition, there's | and $. \ is used to mark usage of safe signs in the text.",
+            "Hello! My name is Jeff Bazos. There are signs used for parsing the delta, such as +, % and -. There's also $ and |. To mark usage of safe signs in the text, we use \.",
+            [
+                "%19|ohn Cena. \\%, \\+ and \\-$eff Bazos. There",
+                "%72|. In addition, t$, such as \\+, \\% and \\-. T",
+                "%102|\\|$also \\$",
+                "%113|\\$. \\\\ is$\\|. To mark",
+                "%126|ed to mark$age of safe signs in the text, we",
+                "%162|age of safe signs in the text$e \\\\",
+            ],
         ),
     ],
 )
-def test_shit(data_1, data_2):
-    delta_list = create_delta_steps_list(data_1, data_2)
-    delta = create_delta_string(delta_list)
-
-    assert apply_delta.apply_string_delta(data_1, delta) == data_2
-    assert apply_delta.apply_string_delta(data_2, delta, reverse_delta=True) == data_1
+def test_create_delta_steps_list(data_0, data_1, res):
+    assert create_delta_steps_list(data_0, data_1) == res
