@@ -22,3 +22,5 @@ N
 smart_delta/src/delta_utils.py,5\d\5d3031ae76befa7c05338ded1c8011761d893e3c
 K
 smart_delta/src/__init__.py,6\3\630d7de39141918547309b1b7dc9eb1351357238
+Q
+!smart_delta/src/generate_delta.py,d\9\d9f0ec57daa424357f86ab5a186ba0a0687f6003

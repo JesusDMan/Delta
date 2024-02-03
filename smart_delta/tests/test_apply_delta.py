@@ -3,7 +3,7 @@ from smart_delta.src.apply_delta import parse_delta_steps
 
 from smart_delta.src import apply_delta
 from smart_delta.src.apply_delta import apply_delta_step
-from smart_delta.src.create_delta import create_delta_steps_list, create_delta_string
+from smart_delta.src.generate_delta import create_delta_steps_list, create_delta_string
 from smart_delta.src.delta import Delta
 
 

@@ -1,6 +1,6 @@
 import pytest
 
-from smart_delta.src.create_delta import *
+from smart_delta.src.generate_delta import *
 
 
 @pytest.mark.parametrize(
