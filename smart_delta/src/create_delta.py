@@ -32,8 +32,8 @@ def create_delta_step(sign, index, payload, second_payload: Optional[str] = None
         if second_payload:
             second_payload = second_payload.replace(possible_sign, UNMARK_MARK + possible_sign)
     if second_payload:
-        payload = f"{payload}${second_payload}"
-    return f"{sign}{index}|{payload}"
+        payload = f"{payload}{REPLACEMENT_SPLIT_MARK}{second_payload}"
+    return f"{sign}{index}{INDEX_PAYLOAD_SEPERATOR_MARK}{payload}"
 
 
 def create_delta_steps_list(data_0, data_1):
@@ -51,13 +51,13 @@ def create_delta_steps_list(data_0, data_1):
             diff_ending_1 += diff_beginning_index_1
 
             if diff_ending_0 != diff_beginning_index_0 and diff_ending_1 == diff_beginning_index_1:
-                res.append(create_delta_step("-", diff_beginning_index_1, data_0[diff_beginning_index_0:diff_ending_0]))
+                res.append(create_delta_step(DELETION_MARK, diff_beginning_index_1, data_0[diff_beginning_index_0:diff_ending_0]))
 
             elif diff_ending_1 != diff_beginning_index_1 and diff_ending_0 == diff_beginning_index_0:
-                res.append(create_delta_step("+", diff_beginning_index_1, data_1[diff_beginning_index_1:diff_ending_1]))
+                res.append(create_delta_step(INSERTION_MARK, diff_beginning_index_1, data_1[diff_beginning_index_1:diff_ending_1]))
 
             elif diff_ending_0 != diff_beginning_index_0 and diff_ending_1 != diff_beginning_index_1:
-                res.append(create_delta_step("%", diff_beginning_index_1, data_0[diff_beginning_index_0:diff_ending_0],
+                res.append(create_delta_step(REPLACEMENT_MARK, diff_beginning_index_1, data_0[diff_beginning_index_0:diff_ending_0],
                                              data_1[diff_beginning_index_1:diff_ending_1]))
 
             index_0 = diff_ending_0 - 1
@@ -73,12 +73,11 @@ def create_delta_steps_list(data_0, data_1):
         diff_beginning_index_1 = index_1
 
     if index_0 < len(data_0) and index_1 >= len(data_1):
-        res.append(create_delta_step("-", diff_beginning_index_1, data_0[diff_beginning_index_0:]))
+        res.append(create_delta_step(DELETION_MARK, diff_beginning_index_1, data_0[diff_beginning_index_0:]))
 
     if index_1 < len(data_1) and index_0 >= len(data_0):
-        res.append(create_delta_step("+", diff_beginning_index_1, data_1[diff_beginning_index_1:]))
+        res.append(create_delta_step(INSERTION_MARK, diff_beginning_index_1, data_1[diff_beginning_index_1:]))
 
-    print(f'("{data_0}", "{data_1}", {res}),')
     return res
 
 
@@ -95,8 +94,6 @@ def main():
     data_2 = "Hello! My name is Jeff Bazos. There are signs used for parsing the delta, such as +, % and -. " \
              "There's also $ and |. To mark usage of safe signs in the text, we use \\."
 
-    # data_1 = "Hi! Duck"
-    # data_2 = "Hi!f fDuckf f"
     delta_utils.print_data(data_1)
     print()
     delta_utils.print_data(data_2)

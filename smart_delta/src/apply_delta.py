@@ -2,7 +2,6 @@ from smart_delta.src import delta
 from smart_delta.src.delta_utils import *
 
 
-
 def parse_delta_steps(delta_string):
     delta_steps = []
     indices = []
@@ -14,10 +13,13 @@ def parse_delta_steps(delta_string):
                 is_after_mark = False
             else:
                 is_after_mark = True
-        if delta_string[i] != "\\" and is_after_mark:
+        if delta_string[i] != UNMARK_MARK and is_after_mark:
             is_after_mark = False
 
-        elif (delta_string[i] == "+" or delta_string[i] == "%" or delta_string[i] == "-") and not is_after_mark:
+        elif ((delta_string[i] == INSERTION_MARK or
+              delta_string[i] == REPLACEMENT_MARK or
+              delta_string[i] == DELETION_MARK) and
+              not is_after_mark):
             indices.append(i)
     indices.append(len(delta_string))
 
@@ -40,7 +42,8 @@ def apply_delta_step(base_data: str, delta, reverse_delta=False, offset=0):
             data_with_delta = base_data[0:index + offset] + base_data[index + len(delta_payload) + offset:]
             offset -= len(delta_payload)
         if sign == REPLACEMENT_MARK:
-            data_with_delta = base_data[0:index + offset] + delta_payload + base_data[index + len(delta.second_payload) + offset:]
+            data_with_delta = base_data[0:index + offset] + delta_payload + base_data[
+                                                                            index + len(delta.second_payload) + offset:]
             offset += len(delta_payload) - len(delta.second_payload)
 
     else:
@@ -64,4 +67,3 @@ def apply_string_delta(base_data, delta_string, reverse_delta=False):
                                                    delta=delta_, reverse_delta=reverse_delta,
                                                    offset=offset)
     return data_with_delta
-

@@ -1,5 +1,5 @@
 import pytest
-from delta.src.apply_delta import parse_delta_steps
+from smart_delta.src.apply_delta import parse_delta_steps
 
 from smart_delta.src import apply_delta
 from smart_delta.src.apply_delta import apply_delta_step
@@ -14,6 +14,7 @@ from smart_delta.src.delta import Delta
         ("-1|lala", ["-1|lala"]),
         ("%1|lala$lili", ["%1|lala$lili"]),
         ("+1|lala+4|lili", ["+1|lala", "+4|lili"]),
+        ("+1|lala\\\\+4|lili", ["+1|lala\\\\", "+4|lili"]),
         ("-1|lala-4|lili", ["-1|lala", "-4|lili"]),
         ("%1|lala$lili%4|lili$lala", ["%1|lala$lili", "%4|lili$lala"]),
         (

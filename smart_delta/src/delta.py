@@ -17,7 +17,7 @@ class Delta:
     def __str__(self):
         payload = self.payload
         if self.is_replacement:
-            payload += f"<$>{self.second_payload}"
+            payload += f"{REPLACEMENT_SPLIT_MARK}{self.second_payload}"
 
         return f"{self.sign}{self.index}{INDEX_PAYLOAD_SEPERATOR_MARK}{payload}"
 
@@ -36,22 +36,22 @@ def split_payload(payload: str):
     split_index = 0
     for i, ch in enumerate(payload):
 
-        if ch == "$" and not is_after_mark:
+        if ch == REPLACEMENT_SPLIT_MARK and not is_after_mark:
             split_index = i
 
-        if ch == "\\":
+        if ch == UNMARK_MARK:
             if is_after_mark:
                 is_after_mark = False
             else:
                 is_after_mark = True
-        if ch != "\\":
+        if ch != UNMARK_MARK:
             is_after_mark = False
     return payload[:split_index], payload[split_index + 1:]
 
 
 def parse_str_delta(str_delta: str) -> Delta:
     sign = str_delta[0]
-    index, payload = str_delta[1:].split("|", 1)
+    index, payload = str_delta[1:].split(INDEX_PAYLOAD_SEPERATOR_MARK, 1)
     index = int(index)
 
     if sign == REPLACEMENT_MARK:
@@ -61,7 +61,7 @@ def parse_str_delta(str_delta: str) -> Delta:
     for i, payload in enumerate(payloads):
         if not payload:
             continue
-        for possible_sign in ("|", "$", "+", "-", "%"):
-            payload = payload.replace("\\" + possible_sign, possible_sign)
-        payloads[i] = payload.replace("\\\\", "\\")
+        for possible_sign in REGULAR_MARKS:
+            payload = payload.replace(UNMARK_MARK + possible_sign, possible_sign)
+        payloads[i] = payload.replace(UNMARK_MARK+UNMARK_MARK, UNMARK_MARK)
     return Delta(sign=sign, index=index, payload=payloads[0], second_payload=payloads[1])

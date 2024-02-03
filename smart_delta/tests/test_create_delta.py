@@ -15,12 +15,14 @@ from smart_delta.src.create_delta import *
             "Hi! Duck shish gon",
             ["-4|lala ", "%9|Gargamel$shish gon"],
         ),
-        ("Hi! \+-|%$ Duck", "Hi! Duck", ["-4|\\\\\\+\\-\\|\\%\\$ "]),
-        ("Hi! Duck", "Hi! \+-|%$ Duck", ["+4|\\\\\\+\\-\\|\\%\\$ "]),
+        ("Hi! \\+-|%$ Duck", "Hi! Duck", ["-4|\\\\\\+\\-\\|\\%\\$ "]),
+        ("Hi! Duck", "Hi! \\+-|%$ Duck", ["+4|\\\\\\+\\-\\|\\%\\$ "]),
         ("Hi! Duck", "Hi!f fDuckf f", ["%3| $f f", "+10|f f"]),
         (
-            "Hello! My name is John Cena. %, + and - are signs used for parsing the delta. In addition, there's | and $. \ is used to mark usage of safe signs in the text.",
-            "Hello! My name is Jeff Bazos. There are signs used for parsing the delta, such as +, % and -. There's also $ and |. To mark usage of safe signs in the text, we use \.",
+            "Hello! My name is John Cena. %, + and - are signs used for parsing the delta. "
+            "In addition, there's | and $. \\ is used to mark usage of safe signs in the text.",
+            "Hello! My name is Jeff Bazos. There are signs used for parsing the delta, such as +, % and -. "
+            "There's also $ and |. To mark usage of safe signs in the text, we use \\.",
             [
                 "%19|ohn Cena. \\%, \\+ and \\-$eff Bazos. There",
                 "%72|. In addition, t$, such as \\+, \\% and \\-. T",
