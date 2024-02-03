@@ -1,4 +1,4 @@
-from smart_delta.src import delta_utils, generate_delta, apply_delta
+from smart_delta.src import delta_utils, delta_generator, apply_delta, delta_applier
 
 
 def main():
@@ -15,16 +15,15 @@ def main():
     print()
     delta_utils.print_data(data_2)
     print()
-    delta_list = generate_delta.create_delta_steps_list(data_1, data_2)
-    delta = generate_delta.create_delta_string(delta_list)
-    print(delta_list)
-    print(repr(delta))
+    delta_ = delta.DeltaApplier(data_1, data_2, generate_delta.generate_delta)
+    print(delta_.delta_elements)
+    delta_ = str(delta_)
+    print(repr(delta_))
 
-    print(generate_delta.parse_delta_steps(delta))
-    print(apply_delta.apply_string_delta(data_1, delta))
+    print(apply_delta.apply_string_delta(data_1, delta_))
     print(data_2)
     print("-" * 99)
-    print(apply_delta.apply_string_delta(data_2, delta, reverse_delta=True))
+    print(apply_delta.apply_string_delta(data_2, delta_, reverse_delta=True))
     print(data_1)
 
 

@@ -26,3 +26,13 @@ Q
 !smart_delta/src/generate_delta.py,d\9\d9f0ec57daa424357f86ab5a186ba0a0687f6003
 O
 smart_delta/bin/create_delta.py,8\9\8954ed367aa871a777608068e349e9d188e00984
+O
+smart_delta/src/deltaelement.py,d\7\d75d3137aefb3bae3357ef86363015239d0283ac
+O
+smart_delta/src/DeltaElement.py,4\e\4e99f4e0c3026831d83824f1ccb7917237948a43
+P
+ smart_delta/src/delta_element.py,8\0\8095b086720204df33c862846b6942bc03afadcf
+P
+ smart_delta/src/delta_applier.py,4\4\440d49ce00dbe55ccabeb7156866259c5224ff8a
+R
+"smart_delta/src/delta_generator.py,f\6\f6f385f44c718d6bc13d8d94c1541a0916599283
