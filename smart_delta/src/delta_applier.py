@@ -1,31 +1,16 @@
 from smart_delta.src import UNMARK_MARK, INSERTION_MARK, REPLACEMENT_MARK, DELETION_MARK
 from smart_delta.src.delta_element import parse_str_delta
+from smart_delta.src.delta_utils import find_system_marks
 
 
 class DeltaApplier:
     def __init__(self, delta_string):
-        delta_steps = []
-        indices = []
-        is_after_mark = False
-
-        for i in range(len(delta_string)):
-            if delta_string[i] == UNMARK_MARK:
-                if is_after_mark:
-                    is_after_mark = False
-                else:
-                    is_after_mark = True
-            if delta_string[i] != UNMARK_MARK and is_after_mark:
-                is_after_mark = False
-
-            elif (delta_string[i] == INSERTION_MARK or delta_string[i] == REPLACEMENT_MARK or delta_string[
-                i] == DELETION_MARK) and not is_after_mark:
-                indices.append(i)
+        self.delta_elements = []
+        indices = find_system_marks(delta_string, (INSERTION_MARK, REPLACEMENT_MARK, DELETION_MARK))
         indices.append(len(delta_string))
 
         for i in range(len(indices) - 1):
-            delta_steps.append(delta_string[indices[i]: indices[i + 1]])
-
-        self.delta_elements = delta_steps
+            self.delta_elements.append(delta_string[indices[i]: indices[i + 1]])
 
     def apply_string_delta(self, base_data, reverse_delta=False):
         delta_steps = self.delta_elements

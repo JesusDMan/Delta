@@ -6,20 +6,27 @@ def print_data(data):
     print("".join([data[i] + " " * len(str(i)) for i in range(len(data))]))
 
 
-def split_payload(payload: str):
+def find_system_marks(string, marks):
+    indices = []
     is_after_mark = False
-    split_index = 0
-    for i, ch in enumerate(payload):
-        if ch == REPLACEMENT_SPLIT_MARK and not is_after_mark:
-            split_index = i
 
-        if ch == UNMARK_MARK:
+    for i, char in enumerate(string):
+        if char == UNMARK_MARK:
             if is_after_mark:
                 is_after_mark = False
             else:
                 is_after_mark = True
-        if ch != UNMARK_MARK:
+
+        if char != UNMARK_MARK and is_after_mark:
             is_after_mark = False
+
+        elif char in marks and not is_after_mark:
+            indices.append(i)
+    return indices
+
+
+def split_payload(payload: str):
+    split_index = find_system_marks(payload, (REPLACEMENT_SPLIT_MARK,))[0]
     return payload[:split_index], payload[split_index + 1:]
 
 
