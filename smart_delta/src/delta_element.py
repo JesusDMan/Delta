@@ -16,6 +16,9 @@ class DeltaElement:
         if parsing_needed:
             self.payload, self.second_payload = self.parse_payloads()
 
+    def __repr__(self):
+        return str(self)
+
     def __str__(self) -> str:
         payload, second_payload = self.fix_payloads()
         if self.is_replacement:
