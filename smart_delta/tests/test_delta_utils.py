@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import pytest
 
 from smart_delta.src.delta_utils import split_payload
@@ -9,5 +11,5 @@ from smart_delta.src.delta_utils import split_payload
                           ("abc\\$$def", ("abc\\$", "def")), ("abc$\\$def", ("abc", "\\$def")),
                           ("\\$abc$def", ("\\$abc", "def")),
                           ("abc$def\\$", ("abc", "def\\$")), ], )
-def test_split_payload(payload, res):
+def test_split_payload(payload: str, res: Tuple[str, str]):
     assert split_payload(payload) == res

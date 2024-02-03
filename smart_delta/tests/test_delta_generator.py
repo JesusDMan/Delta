@@ -1,3 +1,5 @@
+from typing import List
+
 import pytest
 
 from smart_delta.src.delta_generator import DeltaGenerator
@@ -17,7 +19,7 @@ from smart_delta.src.delta_generator import DeltaGenerator
          ["%19|ohn Cena. \\%, \\+ and \\-$eff Bazos. There", "%72|. In addition, t$, such as \\+, \\% and \\-. T",
              "%102|\\|$also \\$", "%113|\\$. \\\\ is$\\|. To mark", "%126|ed to mark$age of safe signs in the text, we",
              "%162|age of safe signs in the text$e \\\\", ],), ], )
-def test_generate_delta(data_0, data_1, res):
+def test_generate_delta(data_0: str, data_1: str, res: List[str]):
     delta_steps = DeltaGenerator(data_0, data_1).delta_elements
 
     delta_steps = [str(delta_step) for delta_step in delta_steps]
