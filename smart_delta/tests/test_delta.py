@@ -1,4 +1,5 @@
 import pytest
+
 from smart_delta.src.delta import *
 from smart_delta.src.delta_utils import parse_str_delta, split_payload
 
