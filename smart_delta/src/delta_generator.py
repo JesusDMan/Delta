@@ -89,16 +89,19 @@ class DeltaGenerator:
 
         while not res:
             while True:
-
-                if index_0_for_1 >= len(data_0) and index_1_for_0 >= len(data_1):
+                if index_0_for_0 >= len(data_0) and index_1_for_1:
+                    res = True
+                    break
+                if index_0_for_0 >= len(data_0) and index_1_for_1 >= len(data_1) or (not (index_1_for_0 < self.max_diff_length and index_1_for_0 <= len(data_1)) and not (index_0_for_1 < self.max_diff_length and index_0_for_1 <= len(data_0))):
+                    # input()
                     break
 
-                print("==============\nData_0 for 0: ", data_0[index_0_for_0: index_0_for_0 + self.min_length_for_fit])
-                print("Data_1 for 0: ", data_1[index_1_for_0: index_1_for_0 + self.min_length_for_fit])
-                print("Data_1 for 1: ", data_1[index_1_for_1: index_1_for_1 + self.min_length_for_fit])
-                print("Data_0 for 1: ", data_0[index_0_for_1: index_0_for_1 + self.min_length_for_fit])
-                print(f"{index_0_for_0=} , {index_1_for_0=} | {index_0_for_1=}, {index_1_for_1=}")
-                print("==============\n")
+                # print("==============\nData_0 for 0: ", data_0[index_0_for_0: index_0_for_0 + self.min_length_for_fit])
+                # print("Data_1 for 0: ", data_1[index_1_for_0: index_1_for_0 + self.min_length_for_fit])
+                # print("Data_1 for 1: ", data_1[index_1_for_1: index_1_for_1 + self.min_length_for_fit])
+                # print("Data_0 for 1: ", data_0[index_0_for_1: index_0_for_1 + self.min_length_for_fit])
+                # print(f"{index_0_for_0=} , {index_1_for_0=} | {index_0_for_1=}, {index_1_for_1=}")
+                # print("==============\n")
                 # time.sleep(0.01)
 
                 if index_1_for_0 < self.max_diff_length and index_1_for_0 <= len(data_1):
@@ -130,7 +133,7 @@ class DeltaGenerator:
             index_1_for_0 = 0
             index_0_for_1 = 0
             index_1_for_1 += 1
-        # input()
+            # input()
         return fit_index_0, fit_index_1
 
     def __str__(self):
