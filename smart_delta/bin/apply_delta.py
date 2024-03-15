@@ -10,12 +10,12 @@ def apply_delta_on_file(base_filepath: str, delta_filepath: str, new_filepath: s
     if base_dir:
         os.chdir(base_dir)
 
-    with open(base_filepath, "r") as f:
+    with open(base_filepath, "rb") as f:
         data_1 = f.read()
-    with open(delta_filepath, "r") as f:
+    with open(delta_filepath, "rb") as f:
         delta = f.read()
 
-    with open(new_filepath, "w") as f:
+    with open(new_filepath, "wb") as f:
         delta = delta_applier.DeltaApplier(delta)
         f.write(delta.apply_on_data(data_1, reverse_delta=reversed))
 

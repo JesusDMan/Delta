@@ -34,7 +34,7 @@ class DeltaElement:
         if self.is_replacement:
             payload += REPLACEMENT_SPLIT_MARK + second_payload
         return self.sign + \
-                bytes([self.index + INT_TO_BYTE_CONVERSION_CONST]) + \
+                str(self.index).encode(ENCODING) + \
                 INDEX_PAYLOAD_SEPERATOR_MARK + \
                 payload
 

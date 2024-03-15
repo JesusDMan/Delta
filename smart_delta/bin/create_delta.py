@@ -10,9 +10,9 @@ def create_delta_file(filepath_1: str, filepath_2: str, delta_filepath: str, max
     if base_dir:
         os.chdir(base_dir)
 
-    with open(filepath_1, "r") as f:
+    with open(filepath_1, "rb") as f:
         data_0 = f.read()
-    with open(filepath_2, "r") as f:
+    with open(filepath_2, "rb") as f:
         data_1 = f.read()
 
     delta_ = delta_generator.DeltaGenerator(
@@ -21,9 +21,9 @@ def create_delta_file(filepath_1: str, filepath_2: str, delta_filepath: str, max
         max_diff_length=max_diff_length,
         min_length_for_fit=min_length_for_fit
     )
-    delta_ = str(delta_)
+    delta_ = bytes(delta_)
 
-    with open(delta_filepath, "w") as f:
+    with open(delta_filepath, "wb") as f:
         f.write(delta_)
 
 
