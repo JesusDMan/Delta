@@ -1,7 +1,6 @@
-import time
 from typing import Tuple, List, Optional
 
-from smart_delta.src import (INSERTION_MARK, DELETION_MARK, REPLACEMENT_MARK, )
+from smart_delta.src import (INSERTION_MARK, DELETION_MARK, REPLACEMENT_MARK, ENCODING)
 from smart_delta.src.delta_element import DeltaElement
 
 
@@ -18,6 +17,12 @@ class DeltaGenerator:
     ):
         self.data_0 = data_0
         self.data_1 = data_1
+
+        if type(self.data_0) is str:
+            self.data_0 = bytes(self.data_0, encoding=ENCODING)
+        if type(self.data_1) is str:
+            self.data_1 = bytes(self.data_1, encoding=ENCODING)
+
         if min_length_for_fit:
             self.min_length_for_fit = min_length_for_fit
         else:
@@ -79,32 +84,30 @@ class DeltaGenerator:
 
         return delta_steps
 
-    # def search_fit(self, data_0, data_1, index_0, index_1):
-
     def range_diff(self, data_0: str, data_1: str) -> Tuple[int, int]:
         fit_index_0, fit_index_1 = len(data_0), len(data_1)
         index_0_for_0, index_1_for_0 = 0, 0
         index_0_for_1, index_1_for_1 = 0, 0
         res = False
-
         while not res:
             while True:
-                if index_0_for_0 >= len(data_0) and index_1_for_1:
+                if index_0_for_0 >= len(data_0) and index_1_for_1 >= len(data_1):
                     res = True
                     break
-                if index_0_for_0 >= len(data_0) and index_1_for_1 >= len(data_1) or (not (index_1_for_0 < self.max_diff_length and index_1_for_0 <= len(data_1)) and not (index_0_for_1 < self.max_diff_length and index_0_for_1 <= len(data_0))):
-                    # input()
+                if (index_1_for_0 >= self.max_diff_length or index_1_for_0 >= len(data_1)) and (
+                        index_0_for_1 >= self.max_diff_length or index_0_for_1 >= len(data_0)):
                     break
 
                 # print("==============\nData_0 for 0: ", data_0[index_0_for_0: index_0_for_0 + self.min_length_for_fit])
                 # print("Data_1 for 0: ", data_1[index_1_for_0: index_1_for_0 + self.min_length_for_fit])
                 # print("Data_1 for 1: ", data_1[index_1_for_1: index_1_for_1 + self.min_length_for_fit])
                 # print("Data_0 for 1: ", data_0[index_0_for_1: index_0_for_1 + self.min_length_for_fit])
+                # print(f"Results: {results}")
                 # print(f"{index_0_for_0=} , {index_1_for_0=} | {index_0_for_1=}, {index_1_for_1=}")
                 # print("==============\n")
                 # time.sleep(0.01)
 
-                if index_1_for_0 < self.max_diff_length and index_1_for_0 <= len(data_1):
+                if index_1_for_0 < self.max_diff_length and index_1_for_0 < len(data_1):
                     if (
                             data_0[index_0_for_0: index_0_for_0 + self.min_length_for_fit] ==
                             data_1[index_1_for_0: index_1_for_0 + self.min_length_for_fit]
@@ -116,8 +119,7 @@ class DeltaGenerator:
                     else:
                         index_1_for_0 += 1
 
-
-                if index_0_for_1 < self.max_diff_length and index_0_for_1 <= len(data_0):
+                if index_0_for_1 < self.max_diff_length and index_0_for_1 < len(data_0):
                     if (
                             data_1[index_1_for_1: index_1_for_1 + self.min_length_for_fit] ==
                             data_0[index_0_for_1: index_0_for_1 + self.min_length_for_fit]
@@ -136,8 +138,19 @@ class DeltaGenerator:
             # input()
         return fit_index_0, fit_index_1
 
-    def __str__(self):
-        delta_string = ""
+    def __bytes__(self):
+        delta_string = b""
         for delta_step in self.delta_elements:
-            delta_string += str(delta_step)
+            delta_string += bytes(delta_step)
         return delta_string
+
+    def __str__(self):
+        return bytes(self).decode(ENCODING)
+
+
+def range_fit(data_0, data_1) -> int:
+    min_len = min(len(data_0), len(data_1))
+    for index in range(min_len):
+        if data_0[index] != data_1[index]:
+            return index
+    return min_len

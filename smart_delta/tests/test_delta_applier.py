@@ -14,6 +14,8 @@ from smart_delta.src.delta_element import DeltaElement
                           ("Hi! Duck", ("+", 4, "+-|$% "), "Hi! +-|$% Duck"),
                           ("Hi! +-|$% Duck", ("%", 4, "+-|$%", "|%$-+"), "Hi! |%$-+ Duck"), ], )
 def test_data_element_is_applied_correctly(base_data: str, delta_element_parameters: Tuple[str, int, str, Optional[str]], data_with_delta: str):
-    delta_element = DeltaElement(*delta_element_parameters)
+    delta_element = DeltaElement(*[i.encode("utf-8") if type(i) is str else i for i in delta_element_parameters])
+    base_data = base_data.encode("utf-8")
+    data_with_delta = data_with_delta.encode("utf-8")
     assert delta_element.apply_on_data(base_data=base_data)[0] == data_with_delta
     assert (delta_element.apply_on_data(base_data=data_with_delta, apply_on_reverse=True)[0] == base_data)

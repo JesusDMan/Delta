@@ -1,12 +1,12 @@
 from typing import Optional, Tuple, List
 
 from smart_delta.src import REPLACEMENT_MARK, REPLACEMENT_SPLIT_MARK, INDEX_PAYLOAD_SEPERATOR_MARK, UNMARK_MARK, \
-    REGULAR_MARKS, DELETION_MARK, INSERTION_MARK
+    REGULAR_MARKS, DELETION_MARK, INSERTION_MARK, ENCODING, INT_TO_BYTE_CONVERSION_CONST
 from smart_delta.src.delta_utils import replace_signs, split_payload
 
 
 class DeltaElement:
-    def __init__(self, sign: str, index: int, payload: str, second_payload: Optional[str] = None, parsing_needed=False):
+    def __init__(self, sign: bytes, index: int, payload: bytes, second_payload: Optional[bytes] = None, parsing_needed=False):
         self.sign = sign
         self.index = index
         self.payload = payload
@@ -22,8 +22,21 @@ class DeltaElement:
     def __str__(self) -> str:
         payload, second_payload = self.fix_payloads()
         if self.is_replacement:
-            payload += f"{REPLACEMENT_SPLIT_MARK}{second_payload}"
-        return f"{self.sign}{self.index}{INDEX_PAYLOAD_SEPERATOR_MARK}{payload}"
+            payload += REPLACEMENT_SPLIT_MARK + second_payload
+        print(f"AHHHHH: {payload.decode(ENCODING)}")
+        return (f"{self.sign.decode(ENCODING)}"
+                f"{self.index}"
+                f"{INDEX_PAYLOAD_SEPERATOR_MARK.decode(ENCODING)}"
+                f"{payload.decode(ENCODING)}")
+
+    def __bytes__(self) -> bytes:
+        payload, second_payload = self.fix_payloads()
+        if self.is_replacement:
+            payload += REPLACEMENT_SPLIT_MARK + second_payload
+        return self.sign + \
+                bytes([self.index + INT_TO_BYTE_CONVERSION_CONST]) + \
+                INDEX_PAYLOAD_SEPERATOR_MARK + \
+                payload
 
     def __eq__(self, other) -> bool:
         if (type(
@@ -33,10 +46,12 @@ class DeltaElement:
 
     def fix_payloads(self) -> Tuple[str, str]:
         fixed_payload, fixed_second_payload = self.payload, self.second_payload
+        print(self.payload)
         for possible_sign in [UNMARK_MARK] + REGULAR_MARKS:
             fixed_payload = replace_signs(fixed_payload, possible_sign, UNMARK_MARK + possible_sign)
             if self.is_replacement:
                 fixed_second_payload = fixed_second_payload.replace(possible_sign, UNMARK_MARK + possible_sign)
+        print(fixed_payload)
         return fixed_payload, fixed_second_payload
 
     def parse_payloads(self) -> List[str]:
@@ -82,9 +97,11 @@ class DeltaElement:
         return data_with_delta, offset
 
 
-def parse_str_delta_element(str_delta: str) -> DeltaElement:
-    sign = str_delta[0]
-    index, payload = str_delta[1:].split(INDEX_PAYLOAD_SEPERATOR_MARK, 1)
+def parse_str_delta_element(bytes_delta: bytes) -> DeltaElement:
+    sign = bytes_delta[0:1]
+    b = bytes_delta[1:]
+    b.split(b'|', 1)
+    index, payload = b.split(INDEX_PAYLOAD_SEPERATOR_MARK, 1)
     index = int(index)
 
     return DeltaElement(sign=sign, index=index, payload=payload, parsing_needed=True)

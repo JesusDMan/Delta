@@ -1,5 +1,5 @@
 from typing import Tuple, Iterable, List
-
+from struct import unpack
 from smart_delta.src import (UNMARK_MARK, REPLACEMENT_SPLIT_MARK, )
 
 
@@ -12,7 +12,7 @@ def find_system_marks(string: str, marks: Iterable[str]) -> List[str]:
     indices = []
     is_after_mark = False
 
-    for i, char in enumerate(string):
+    for i, char in enumerate(unpack(f"{len(string)}c", string)):
         if char == UNMARK_MARK:
             if is_after_mark:
                 is_after_mark = False
@@ -27,7 +27,7 @@ def find_system_marks(string: str, marks: Iterable[str]) -> List[str]:
     return indices
 
 
-def split_payload(payload: str) -> Tuple[str, str]:
+def split_payload(payload: bytes) -> Tuple[str, str]:
     split_index = find_system_marks(payload, (REPLACEMENT_SPLIT_MARK,))[0]
     return payload[:split_index], payload[split_index + 1:]
 
