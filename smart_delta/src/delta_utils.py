@@ -8,11 +8,11 @@ def print_data(data: str) -> None:
     print("".join([data[i] + " " * len(str(i)) for i in range(len(data))]))
 
 
-def find_system_marks(string: str, marks: Iterable[str]) -> List[str]:
+def find_system_marks(bytes_string: bytes, marks: Iterable[str]) -> List[str]:
     indices = []
     is_after_mark = False
 
-    for i, char in enumerate(unpack(f"{len(string)}c", string)):
+    for i, char in enumerate(unpack(f"{len(bytes_string)}c", bytes_string)):
         if char == UNMARK_MARK:
             if is_after_mark:
                 is_after_mark = False
