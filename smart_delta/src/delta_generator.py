@@ -1,4 +1,5 @@
-from typing import Tuple, List, Optional
+import time
+from typing import Tuple, List, Optional, Union
 
 from smart_delta.src import (INSERTION_MARK, DELETION_MARK, REPLACEMENT_MARK, ENCODING)
 from smart_delta.src.delta_element import DeltaElement
@@ -10,8 +11,8 @@ class DeltaGenerator:
 
     def __init__(
             self,
-            data_0,
-            data_1,
+            data_0: Union[str, bytes],
+            data_1: Union[str, bytes],
             min_length_for_fit: Optional[int] = None,
             max_diff_length: Optional[int] = None
     ):
@@ -81,10 +82,10 @@ class DeltaGenerator:
         if index_1 < len(self.data_1) and index_0 >= len(self.data_0):
             delta_steps.append(
                 DeltaElement(INSERTION_MARK, diff_beginning_index_1, self.data_1[diff_beginning_index_1:]))
-
         return delta_steps
 
-    def range_diff(self, data_0: str, data_1: str) -> Tuple[int, int]:
+    def range_diff(self, data_0: bytes, data_1: bytes) -> Tuple[int, int]:
+
         fit_index_0, fit_index_1 = len(data_0), len(data_1)
         index_0_for_0, index_1_for_0 = 0, 0
         index_0_for_1, index_1_for_1 = 0, 0
@@ -97,15 +98,6 @@ class DeltaGenerator:
                 if (index_1_for_0 >= self.max_diff_length or index_1_for_0 >= len(data_1)) and (
                         index_0_for_1 >= self.max_diff_length or index_0_for_1 >= len(data_0)):
                     break
-
-                # print("==============\nData_0 for 0: ", data_0[index_0_for_0: index_0_for_0 + self.min_length_for_fit])
-                # print("Data_1 for 0: ", data_1[index_1_for_0: index_1_for_0 + self.min_length_for_fit])
-                # print("Data_1 for 1: ", data_1[index_1_for_1: index_1_for_1 + self.min_length_for_fit])
-                # print("Data_0 for 1: ", data_0[index_0_for_1: index_0_for_1 + self.min_length_for_fit])
-                # print(f"Results: {results}")
-                # print(f"{index_0_for_0=} , {index_1_for_0=} | {index_0_for_1=}, {index_1_for_1=}")
-                # print("==============\n")
-                # time.sleep(0.01)
 
                 if index_1_for_0 < self.max_diff_length and index_1_for_0 < len(data_1):
                     if (
@@ -135,7 +127,6 @@ class DeltaGenerator:
             index_1_for_0 = 0
             index_0_for_1 = 0
             index_1_for_1 += 1
-            # input()
         return fit_index_0, fit_index_1
 
     def __bytes__(self):
