@@ -6,16 +6,16 @@ from smart_delta.src.delta_element import DeltaElement
 
 
 @pytest.mark.parametrize("base_data,delta_element_parameters,data_with_delta",
-                         [("Hi| Duck", ("%", 2, "|", "!"), "Hi! Duck"), ("Hi! Duck", ("%", 2, "!", "|"), "Hi| Duck"),
-                          ("Hi! Duck", ("+", 8, "er"), "Hi! Ducker"), ("Hi! Ducker", ("-", 8, "er"), "Hi! Duck"),
-                          ("Hi! I'm a Duck", ("-", 4, "I'm a "), "Hi! Duck"),
-                          ("Hi! Duck", ("+", 4, "I'm a "), "Hi! I'm a Duck"),
-                          ("Hi! This is a Duck", ("%", 4, "This is", "I'm"), "Hi! I'm a Duck"),
-                          ("Hi! Duck", ("+", 4, "+-|$% "), "Hi! +-|$% Duck"),
-                          ("Hi! +-|$% Duck", ("%", 4, "+-|$%", "|%$-+"), "Hi! |%$-+ Duck"), ], )
-def test_data_element_is_applied_correctly(base_data: str, delta_element_parameters: Tuple[str, int, str, Optional[str]], data_with_delta: str):
-    delta_element = DeltaElement(*[i.encode("utf-8") if type(i) is str else i for i in delta_element_parameters])
-    base_data = base_data.encode("utf-8")
-    data_with_delta = data_with_delta.encode("utf-8")
+                         [(b"Hi| Duck", (b"%", 2, b"|", b"!"), b"Hi! Duck"),
+                          (b"Hi! Duck", (b"%", 2, b"!", b"|"), b"Hi| Duck"),
+                          (b"Hi! Duck", (b"+", 8, b"er"), b"Hi! Ducker"),
+                          (b"Hi! Ducker", (b"-", 8, b"er"), b"Hi! Duck"),
+                          (b"Hi! I'm a Duck", (b"-", 4, b"I'm a "), b"Hi! Duck"),
+                          (b"Hi! Duck", (b"+", 4, b"I'm a "), b"Hi! I'm a Duck"),
+                          (b"Hi! This is a Duck", (b"%", 4, b"This is", b"I'm"), b"Hi! I'm a Duck"),
+                          (b"Hi! Duck", (b"+", 4, b"+-|$% "), b"Hi! +-|$% Duck"),
+                          (b"Hi! +-|$% Duck", (b"%", 4, b"+-|$%", b"|%$-+"), b"Hi! |%$-+ Duck"), ], )
+def test_data_element_is_applied_correctly(base_data: bytes, delta_element_parameters: Tuple[bytes, int, bytes, Optional[bytes]], data_with_delta: bytes):
+    delta_element = DeltaElement(*delta_element_parameters)
     assert delta_element.apply_on_data(base_data=base_data)[0] == data_with_delta
     assert (delta_element.apply_on_data(base_data=data_with_delta, apply_on_reverse=True)[0] == base_data)
