@@ -9,7 +9,7 @@ def apply_delta_on_file(
     base_filepath: str,
     delta_filepath: str,
     new_filepath: str,
-    reversed: bool = False,
+    reverse: bool = False,
     base_dir: Optional[str] = None,
 ):
     if base_dir:
@@ -22,7 +22,7 @@ def apply_delta_on_file(
 
     with open(new_filepath, "wb") as f:
         delta = delta_applier.DeltaApplier(delta)
-        f.write(delta.apply_on_data(data_1, reverse_delta=reversed))
+        f.write(delta.apply_on_data(data_1, reverse_delta=reverse))
 
 
 def main():
@@ -37,7 +37,7 @@ def main():
         base_filepath=args.base_file,
         delta_filepath=args.delta_file,
         new_filepath=args.new_file,
-        reversed=args.reversed,
+        reverse=args.reversed,
         base_dir=args.base_dir,
     )
 
