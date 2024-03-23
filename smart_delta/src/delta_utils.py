@@ -31,7 +31,7 @@ def find_system_marks(bytes_string: bytes, marks: Iterable[str]) -> List[str]:
     return indices
 
 
-def split_payload(payload: bytes) -> Tuple[str, str]:
+def split_payload(payload: bytes) -> Tuple[bytes, bytes]:
     split_index = find_system_marks(payload, (REPLACEMENT_SPLIT_MARK,))[0]
     return payload[:split_index], payload[split_index + 1:]
 
