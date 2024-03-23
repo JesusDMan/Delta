@@ -127,9 +127,12 @@ class DeltaGenerator:
             [int, bytes], bool
         ] = lambda index, data: index < self.max_diff_length and index < len(data)
 
-        slice_data: Callable[[bytes, int, int], bytes] = lambda l, b: l[
-            b : b + self.min_length_for_fit
-        ]
+        check_if_fit_found: Callable[
+            [bytes, bytes, int, int], bool
+        ] = lambda index_0, index_1: (
+            data_0[index_0:][: self.min_length_for_fit]
+            == data_1[index_1:][: self.min_length_for_fit]
+        )
 
         while index_0_for_0 < len(data_0) and index_1_for_1 < len(data_1):
             while True:
@@ -138,14 +141,10 @@ class DeltaGenerator:
                 ) and not check_index_in_range(index_0_for_1, data_0):
                     break
 
-                if slice_data(data_0, index_0_for_0) == slice_data(
-                    data_1, index_1_for_0
-                ):
+                if check_if_fit_found(index_0_for_0, index_1_for_0):
                     return index_0_for_0, index_1_for_0
 
-                if slice_data(data_1, index_1_for_1) == slice_data(
-                    data_0, index_0_for_1
-                ):
+                if check_if_fit_found(index_0_for_1, index_1_for_1):
                     return index_0_for_1, index_1_for_1
 
                 index_1_for_0 += 1
