@@ -32,11 +32,11 @@ class DeltaGenerator:
         else:
             self.max_diff_length = self.DEFAULT_MAX_DIFF_LENGTH
 
-        self.delta_elements = self.generate_delta()
+        self.delta_elements: List[DeltaElement] = []
 
     def generate_delta(self) -> List[DeltaElement]:
         diff_beginning_index_0 = None
-        delta_steps = []
+        self.delta_elements = []
 
         index_0, index_1 = 0, 0
 
@@ -55,7 +55,7 @@ class DeltaGenerator:
 
                 delta_element = self.create_delta_element(diff_beginning_index_0, diff_ending_0, diff_beginning_index_1, diff_ending_1)
                 if delta_element is not None:
-                    delta_steps.append(delta_element)
+                    self.delta_elements.append(delta_element)
 
                 index_0 = diff_ending_0 - 1
                 index_1 = diff_ending_1 - 1
@@ -70,7 +70,7 @@ class DeltaGenerator:
             diff_beginning_index_1 = index_1
 
         if index_0 < len(self.data_0) and index_1 >= len(self.data_1):
-            delta_steps.append(
+            self.delta_elements.append(
                 DeltaElement(
                     DELETION_MARK,
                     diff_beginning_index_1,
@@ -79,14 +79,14 @@ class DeltaGenerator:
             )
 
         if index_1 < len(self.data_1) and index_0 >= len(self.data_0):
-            delta_steps.append(
+            self.delta_elements.append(
                 DeltaElement(
                     INSERTION_MARK,
                     diff_beginning_index_1,
                     self.data_1[diff_beginning_index_1:],
                 )
             )
-        return delta_steps
+        return self.delta_elements
 
     def create_delta_element(self, diff_beginning_index_0: int, diff_ending_0: int, diff_beginning_index_1: int,
                              diff_ending_1: int) -> Optional[DeltaElement]:
@@ -130,9 +130,9 @@ class DeltaGenerator:
     def __str__(self):
         return bytes(self).decode(ENCODING)
 
-    def range_fit(data_0, data_1) -> int:
-        min_len = min(len(data_0), len(data_1))
-        for index in range(min_len):
-            if data_0[index] != data_1[index]:
-                return index
-        return min_len
+def range_fit(data_0, data_1) -> int:
+    min_len = min(len(data_0), len(data_1))
+    for index in range(min_len):
+        if data_0[index] != data_1[index]:
+            return index
+    return min_len

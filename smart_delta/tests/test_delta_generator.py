@@ -58,9 +58,6 @@ def test_generate_delta(
         data_1,
         max_diff_length=max_diff_length,
         min_length_for_fit=min_length_for_fit,
-    ).delta_elements
-    print(delta_steps)
+    ).generate_delta()
     delta_steps = [bytes(delta_step) for delta_step in delta_steps]
     assert delta_steps == res
-
-

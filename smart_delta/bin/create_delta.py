@@ -27,6 +27,7 @@ def create_delta_file(
         max_diff_length=max_diff_length,
         min_length_for_fit=min_length_for_fit,
     )
+    delta_.generate_delta()
     delta_ = bytes(delta_)
 
     with open(delta_filepath, "wb") as f:
