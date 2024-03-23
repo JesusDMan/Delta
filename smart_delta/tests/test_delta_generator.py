@@ -10,48 +10,48 @@ from smart_delta.src.delta_generator import DeltaGenerator
     [
         (b"Hi! Duck", b"Hi! Duck", None, None, []),
         (
-                b"Hi! lala Duck Gargamel",
-                b"Hi! Duck",
-                None,
-                None,
-                [b"-4|lala ", b"-8| Gargamel"],
+            b"Hi! lala Duck Gargamel",
+            b"Hi! Duck",
+            None,
+            None,
+            [b"-4|lala ", b"-8| Gargamel"],
         ),
         (b"Hi! Duck", b"Hi! lili Duck", None, None, [b"+4|lili "]),
         (b"Hi! lala Duck", b"Hi! ronron Duck", None, None, [b"%4|lala$ronron"]),
         (
-                b"Hi! lala Duck Gargamel",
-                b"Hi! Duck shish gon",
-                None,
-                None,
-                [b"-4|lala ", b"%9|Gargamel$shish gon"],
+            b"Hi! lala Duck Gargamel",
+            b"Hi! Duck shish gon",
+            None,
+            None,
+            [b"-4|lala ", b"%9|Gargamel$shish gon"],
         ),
         (b"Hi! \\+-|%$ Duck", b"Hi! Duck", None, None, [b"-4|\\\\\\+\\-\\|\\%\\$ "]),
         (b"Hi! Duck", b"Hi! \\+-|%$ Duck", None, None, [b"+4|\\\\\\+\\-\\|\\%\\$ "]),
         (b"Hi! Duck", b"Hi!f fDuckf f", None, None, [b"%3| $f f", b"+10|f f"]),
         (
-                b"Hello! My name is John Cena. %, + and - are signs used for parsing the delta. "
-                b"In addition, there's | and $. \\ is used to mark usage of safe signs in the text.",
-                b"Hello! My name is Jeff Bazos. There are signs used for parsing the delta, such as +, % and -. "
-                b"There's also $ and |. To mark usage of safe signs in the text, we use \\.",
-                50,
-                3,
-                [
-                    b"%19|ohn Cena. \\%, \\+ and \\- a$eff Bazos. The",
-                    b"+36|are ",
-                    b"%72|. In addition, there's \\|$, such as \\+, \\%",
-                    b"%91|\\$. \\\\ is$\\-. There's also \\$ and \\|. To mark",
-                    b"-126|ed to mark us",
-                    b"+155|, we use \\\\",
-                ],
+            b"Hello! My name is John Cena. %, + and - are signs used for parsing the delta. "
+            b"In addition, there's | and $. \\ is used to mark usage of safe signs in the text.",
+            b"Hello! My name is Jeff Bazos. There are signs used for parsing the delta, such as +, % and -. "
+            b"There's also $ and |. To mark usage of safe signs in the text, we use \\.",
+            50,
+            3,
+            [
+                b"%19|ohn Cena. \\%, \\+ and \\- a$eff Bazos. The",
+                b"+36|are ",
+                b"%72|. In addition, there's \\|$, such as \\+, \\%",
+                b"%91|\\$. \\\\ is$\\-. There's also \\$ and \\|. To mark",
+                b"-126|ed to mark us",
+                b"+155|, we use \\\\",
+            ],
         ),
     ],
 )
 def test_generate_delta(
-        data_0: bytes,
-        data_1: bytes,
-        max_diff_length: Optional[int],
-        min_length_for_fit: Optional[int],
-        res: List[bytes],
+    data_0: bytes,
+    data_1: bytes,
+    max_diff_length: Optional[int],
+    min_length_for_fit: Optional[int],
+    res: List[bytes],
 ):
     delta_steps = DeltaGenerator(
         data_0,
@@ -64,15 +64,29 @@ def test_generate_delta(
     assert delta_steps == res
 
 
-@pytest.mark.parametrize("data_0,data_1,max_diff_length,min_length_for_fit,true_res", [
-    (b"123456", b"123456", 3, 3, (0, 0)),
-    (b"123456", b"323456", 3, 3, (1, 1)),
-    (b"123456", b"3123456", 3, 3, (0, 1)),
-    (b"3123456", b"123456", 3, 3, (1, 0)),
-    (b"123456", b"111111", 3, 3, (6, 6)),
-    (b"123456", b"1111111", 3, 3, (6, 7)),
-    (b"1234567", b"111111", 3, 3, (7, 6)),
-])
-def test_range_diff(data_0: bytes, data_1: bytes, max_diff_length, min_length_for_fit, true_res: Tuple[int, int]):
-    dg = DeltaGenerator(data_0, data_1, max_diff_length=max_diff_length, min_length_for_fit=min_length_for_fit)
+@pytest.mark.parametrize(
+    "data_0,data_1,max_diff_length,min_length_for_fit,true_res",
+    [
+        (b"123456", b"123456", 3, 3, (0, 0)),
+        (b"123456", b"323456", 3, 3, (1, 1)),
+        (b"123456", b"3123456", 3, 3, (0, 1)),
+        (b"3123456", b"123456", 3, 3, (1, 0)),
+        (b"123456", b"111111", 3, 3, (6, 6)),
+        (b"123456", b"1111111", 3, 3, (6, 7)),
+        (b"1234567", b"111111", 3, 3, (7, 6)),
+    ],
+)
+def test_range_diff(
+    data_0: bytes,
+    data_1: bytes,
+    max_diff_length,
+    min_length_for_fit,
+    true_res: Tuple[int, int],
+):
+    dg = DeltaGenerator(
+        data_0,
+        data_1,
+        max_diff_length=max_diff_length,
+        min_length_for_fit=min_length_for_fit,
+    )
     assert dg.range_diff(data_0, data_1) == true_res
