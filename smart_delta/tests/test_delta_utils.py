@@ -34,11 +34,11 @@ def test_split_payload(payload: str, res: Tuple[str, str]):
     ],
 )
 def test_range_diff(
-        data_0: bytes,
-        data_1: bytes,
-        max_diff_length,
-        min_length_for_fit,
-        true_res: Tuple[int, int],
+    data_0: bytes,
+    data_1: bytes,
+    max_diff_length,
+    min_length_for_fit,
+    true_res: Tuple[int, int],
 ):
     res = range_diff(
         data_0,

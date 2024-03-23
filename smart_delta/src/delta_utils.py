@@ -33,18 +33,18 @@ def find_system_marks(bytes_string: bytes, marks: Iterable[str]) -> List[str]:
 
 def split_payload(payload: bytes) -> Tuple[bytes, bytes]:
     split_index = find_system_marks(payload, (REPLACEMENT_SPLIT_MARK,))[0]
-    return payload[:split_index], payload[split_index + 1:]
+    return payload[:split_index], payload[split_index + 1 :]
 
 
 def replace_signs(data: str, to_replace: str, replace_with: str) -> str:
     is_after_mark = False
     new_data = data
     for index, char in enumerate(data):
-        if data[index: index + len(to_replace)] == to_replace and not is_after_mark:
+        if data[index : index + len(to_replace)] == to_replace and not is_after_mark:
             new_data = (
-                    new_data[: index + len(new_data) - len(data)]
-                    + replace_with
-                    + data[index + len(to_replace):]
+                new_data[: index + len(new_data) - len(data)]
+                + replace_with
+                + data[index + len(to_replace) :]
             )
         elif char == UNMARK_MARK:
             if is_after_mark:
@@ -56,7 +56,9 @@ def replace_signs(data: str, to_replace: str, replace_with: str) -> str:
     return new_data
 
 
-def range_diff(data_0: bytes, data_1: bytes, max_diff_length: int, min_length_for_fit) -> Tuple[int, int]:
+def range_diff(
+    data_0: bytes, data_1: bytes, max_diff_length: int, min_length_for_fit
+) -> Tuple[int, int]:
     index_0_for_0, index_1_for_0 = 0, 0
     index_0_for_1, index_1_for_1 = 0, 0
 
@@ -67,14 +69,13 @@ def range_diff(data_0: bytes, data_1: bytes, max_diff_length: int, min_length_fo
     check_if_fit_found: Callable[
         [bytes, bytes, int, int], bool
     ] = lambda index_0, index_1: (
-            data_0[index_0:][: min_length_for_fit]
-            == data_1[index_1:][: min_length_for_fit]
+        data_0[index_0:][:min_length_for_fit] == data_1[index_1:][:min_length_for_fit]
     )
 
     while index_0_for_0 < len(data_0) and index_1_for_1 < len(data_1):
         while True:
             if not check_index_in_range(
-                    index_1_for_0, data_1
+                index_1_for_0, data_1
             ) and not check_index_in_range(index_0_for_1, data_0):
                 break
 
