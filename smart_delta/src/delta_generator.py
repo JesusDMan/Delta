@@ -120,18 +120,13 @@ class DeltaGenerator:
         return delta_steps
 
     def range_diff(self, data_0: bytes, data_1: bytes) -> Tuple[int, int]:
-
         index_0_for_0, index_1_for_0 = 0, 0
         index_0_for_1, index_1_for_1 = 0, 0
-        is_finished = False
 
         check_index_in_range: Callable[[int, bytes], bool] = lambda index, data:\
             index < self.max_diff_length and index < len(data)
 
-        while not is_finished:
-            if index_0_for_0 >= len(data_0) and index_1_for_1 >= len(data_1):
-                break
-
+        while index_0_for_0 < len(data_0) and index_1_for_1 < len(data_1):
             while True:
                 if not check_index_in_range(index_1_for_0, data_1) and not check_index_in_range(index_0_for_1, data_0):
                     break
