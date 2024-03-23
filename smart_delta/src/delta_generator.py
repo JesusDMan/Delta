@@ -1,4 +1,3 @@
-import time
 from typing import Tuple, List, Optional, Union
 
 from smart_delta.src import INSERTION_MARK, DELETION_MARK, REPLACEMENT_MARK, ENCODING
@@ -125,11 +124,12 @@ class DeltaGenerator:
         fit_index_0, fit_index_1 = len(data_0), len(data_1)
         index_0_for_0, index_1_for_0 = 0, 0
         index_0_for_1, index_1_for_1 = 0, 0
-        res = False
-        while not res:
+        is_finished = False
+
+        while not is_finished:
             while True:
                 if index_0_for_0 >= len(data_0) and index_1_for_1 >= len(data_1):
-                    res = True
+                    is_finished = True
                     break
                 if (
                     index_1_for_0 >= self.max_diff_length
@@ -142,14 +142,14 @@ class DeltaGenerator:
 
                 if index_1_for_0 < self.max_diff_length and index_1_for_0 < len(data_1):
                     if (
-                        data_0[index_0_for_0 : index_0_for_0 + self.min_length_for_fit]
+                        data_0[index_0_for_0: index_0_for_0 + self.min_length_for_fit]
                         == data_1[
-                            index_1_for_0 : index_1_for_0 + self.min_length_for_fit
+                            index_1_for_0: index_1_for_0 + self.min_length_for_fit
                         ]
                     ):
                         fit_index_0 = index_0_for_0
                         fit_index_1 = index_1_for_0
-                        res = True
+                        is_finished = True
                         break
                     else:
                         index_1_for_0 += 1
@@ -163,7 +163,7 @@ class DeltaGenerator:
                     ):
                         fit_index_0 = index_0_for_1
                         fit_index_1 = index_1_for_1
-                        res = True
+                        is_finished = True
                         break
                     else:
                         index_0_for_1 += 1
