@@ -1,4 +1,4 @@
-from typing import Tuple, List, Optional, Union
+from typing import Tuple, List, Optional, Union, Callable, Any
 
 from smart_delta.src import INSERTION_MARK, DELETION_MARK, REPLACEMENT_MARK, ENCODING
 from smart_delta.src.delta_element import DeltaElement
@@ -9,11 +9,11 @@ class DeltaGenerator:
     DEFAULT_MIN_LENGTH_FOR_FIT = 3
 
     def __init__(
-        self,
-        data_0: Union[str, bytes],
-        data_1: Union[str, bytes],
-        min_length_for_fit: Optional[int] = None,
-        max_diff_length: Optional[int] = None,
+            self,
+            data_0: Union[str, bytes],
+            data_1: Union[str, bytes],
+            min_length_for_fit: Optional[int] = None,
+            max_diff_length: Optional[int] = None,
     ):
         self.data_0 = data_0
         self.data_1 = data_1
@@ -52,8 +52,8 @@ class DeltaGenerator:
                 diff_ending_1 += diff_beginning_index_1
 
                 if (
-                    diff_ending_0 != diff_beginning_index_0
-                    and diff_ending_1 == diff_beginning_index_1
+                        diff_ending_0 != diff_beginning_index_0
+                        and diff_ending_1 == diff_beginning_index_1
                 ):
                     delta_steps.append(
                         DeltaElement(
@@ -64,8 +64,8 @@ class DeltaGenerator:
                     )
 
                 elif (
-                    diff_ending_1 != diff_beginning_index_1
-                    and diff_ending_0 == diff_beginning_index_0
+                        diff_ending_1 != diff_beginning_index_1
+                        and diff_ending_0 == diff_beginning_index_0
                 ):
                     delta_steps.append(
                         DeltaElement(
@@ -76,8 +76,8 @@ class DeltaGenerator:
                     )
 
                 elif (
-                    diff_ending_0 != diff_beginning_index_0
-                    and diff_ending_1 != diff_beginning_index_1
+                        diff_ending_0 != diff_beginning_index_0
+                        and diff_ending_1 != diff_beginning_index_1
                 ):
                     delta_steps.append(
                         DeltaElement(
@@ -121,58 +121,46 @@ class DeltaGenerator:
 
     def range_diff(self, data_0: bytes, data_1: bytes) -> Tuple[int, int]:
 
-        fit_index_0, fit_index_1 = len(data_0), len(data_1)
         index_0_for_0, index_1_for_0 = 0, 0
         index_0_for_1, index_1_for_1 = 0, 0
         is_finished = False
 
+        check_index_in_range: Callable[[int, bytes], bool] = lambda index, data:\
+            index < self.max_diff_length and index < len(data)
+
         while not is_finished:
+            if index_0_for_0 >= len(data_0) and index_1_for_1 >= len(data_1):
+                break
+
             while True:
-                if index_0_for_0 >= len(data_0) and index_1_for_1 >= len(data_1):
-                    is_finished = True
-                    break
-                if (
-                    index_1_for_0 >= self.max_diff_length
-                    or index_1_for_0 >= len(data_1)
-                ) and (
-                    index_0_for_1 >= self.max_diff_length
-                    or index_0_for_1 >= len(data_0)
-                ):
+                if not check_index_in_range(index_1_for_0, data_1) and not check_index_in_range(index_0_for_1, data_0):
                     break
 
-                if index_1_for_0 < self.max_diff_length and index_1_for_0 < len(data_1):
+                if check_index_in_range(index_1_for_0, data_1):
                     if (
-                        data_0[index_0_for_0: index_0_for_0 + self.min_length_for_fit]
-                        == data_1[
-                            index_1_for_0: index_1_for_0 + self.min_length_for_fit
-                        ]
+                            data_0[index_0_for_0: index_0_for_0 + self.min_length_for_fit]
+                            == data_1[
+                               index_1_for_0: index_1_for_0 + self.min_length_for_fit
+                               ]
                     ):
-                        fit_index_0 = index_0_for_0
-                        fit_index_1 = index_1_for_0
-                        is_finished = True
-                        break
-                    else:
-                        index_1_for_0 += 1
+                        return index_0_for_0, index_1_for_0
+                    index_1_for_0 += 1
 
-                if index_0_for_1 < self.max_diff_length and index_0_for_1 < len(data_0):
+                if check_index_in_range(index_0_for_1, data_0):
                     if (
-                        data_1[index_1_for_1 : index_1_for_1 + self.min_length_for_fit]
-                        == data_0[
-                            index_0_for_1 : index_0_for_1 + self.min_length_for_fit
-                        ]
+                            data_1[index_1_for_1: index_1_for_1 + self.min_length_for_fit]
+                            == data_0[
+                               index_0_for_1: index_0_for_1 + self.min_length_for_fit
+                               ]
                     ):
-                        fit_index_0 = index_0_for_1
-                        fit_index_1 = index_1_for_1
-                        is_finished = True
-                        break
-                    else:
-                        index_0_for_1 += 1
+                        return index_0_for_1, index_1_for_1
+                    index_0_for_1 += 1
 
             index_0_for_0 += 1
             index_1_for_0 = 0
             index_0_for_1 = 0
             index_1_for_1 += 1
-        return fit_index_0, fit_index_1
+        return len(data_0), len(data_1)
 
     def __bytes__(self):
         delta_string = b""
