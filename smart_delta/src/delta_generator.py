@@ -1,4 +1,4 @@
-from typing import Tuple, List, Optional, Union, Callable, Any, Iterable
+from typing import List, Optional, Union
 
 from smart_delta.src import INSERTION_MARK, DELETION_MARK, REPLACEMENT_MARK, ENCODING, delta_utils
 from smart_delta.src.delta_element import DeltaElement
@@ -9,11 +9,11 @@ class DeltaGenerator:
     DEFAULT_MIN_LENGTH_FOR_FIT = 3
 
     def __init__(
-        self,
-        data_0: Union[str, bytes],
-        data_1: Union[str, bytes],
-        min_length_for_fit: Optional[int] = None,
-        max_diff_length: Optional[int] = None,
+            self,
+            data_0: Union[str, bytes],
+            data_1: Union[str, bytes],
+            min_length_for_fit: Optional[int] = None,
+            max_diff_length: Optional[int] = None,
     ):
         self.data_0 = data_0
         self.data_1 = data_1
@@ -53,42 +53,9 @@ class DeltaGenerator:
                 diff_ending_0 += diff_beginning_index_0
                 diff_ending_1 += diff_beginning_index_1
 
-                if (
-                    diff_ending_0 != diff_beginning_index_0
-                    and diff_ending_1 == diff_beginning_index_1
-                ):
-                    delta_steps.append(
-                        DeltaElement(
-                            DELETION_MARK,
-                            diff_beginning_index_1,
-                            self.data_0[diff_beginning_index_0:diff_ending_0],
-                        )
-                    )
-
-                elif (
-                    diff_ending_1 != diff_beginning_index_1
-                    and diff_ending_0 == diff_beginning_index_0
-                ):
-                    delta_steps.append(
-                        DeltaElement(
-                            INSERTION_MARK,
-                            diff_beginning_index_1,
-                            self.data_1[diff_beginning_index_1:diff_ending_1],
-                        )
-                    )
-
-                elif (
-                    diff_ending_0 != diff_beginning_index_0
-                    and diff_ending_1 != diff_beginning_index_1
-                ):
-                    delta_steps.append(
-                        DeltaElement(
-                            REPLACEMENT_MARK,
-                            diff_beginning_index_1,
-                            self.data_0[diff_beginning_index_0:diff_ending_0],
-                            self.data_1[diff_beginning_index_1:diff_ending_1],
-                        )
-                    )
+                delta_element = self.create_delta_element(diff_beginning_index_0, diff_ending_0, diff_beginning_index_1, diff_ending_1)
+                if delta_element is not None:
+                    delta_steps.append(delta_element)
 
                 index_0 = diff_ending_0 - 1
                 index_1 = diff_ending_1 - 1
@@ -121,6 +88,38 @@ class DeltaGenerator:
             )
         return delta_steps
 
+    def create_delta_element(self, diff_beginning_index_0: int, diff_ending_0: int, diff_beginning_index_1: int,
+                             diff_ending_1: int) -> Optional[DeltaElement]:
+        if (
+                diff_ending_0 != diff_beginning_index_0
+                and diff_ending_1 == diff_beginning_index_1
+        ):
+            return DeltaElement(
+                DELETION_MARK,
+                diff_beginning_index_1,
+                self.data_0[diff_beginning_index_0:diff_ending_0],
+            )
+
+        if (
+                diff_ending_1 != diff_beginning_index_1
+                and diff_ending_0 == diff_beginning_index_0
+        ):
+            return DeltaElement(
+                INSERTION_MARK,
+                diff_beginning_index_1,
+                self.data_1[diff_beginning_index_1:diff_ending_1],
+            )
+
+        if (
+                diff_ending_0 != diff_beginning_index_0
+                and diff_ending_1 != diff_beginning_index_1
+        ):
+            return DeltaElement(
+                REPLACEMENT_MARK,
+                diff_beginning_index_1,
+                self.data_0[diff_beginning_index_0:diff_ending_0],
+                self.data_1[diff_beginning_index_1:diff_ending_1],
+            )
 
     def __bytes__(self):
         delta_string = b""
@@ -131,10 +130,9 @@ class DeltaGenerator:
     def __str__(self):
         return bytes(self).decode(ENCODING)
 
-
-def range_fit(data_0, data_1) -> int:
-    min_len = min(len(data_0), len(data_1))
-    for index in range(min_len):
-        if data_0[index] != data_1[index]:
-            return index
-    return min_len
+    def range_fit(data_0, data_1) -> int:
+        min_len = min(len(data_0), len(data_1))
+        for index in range(min_len):
+            if data_0[index] != data_1[index]:
+                return index
+        return min_len
