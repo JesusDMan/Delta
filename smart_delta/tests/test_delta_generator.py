@@ -64,29 +64,3 @@ def test_generate_delta(
     assert delta_steps == res
 
 
-@pytest.mark.parametrize(
-    "data_0,data_1,max_diff_length,min_length_for_fit,true_res",
-    [
-        (b"123456", b"123456", 3, 3, (0, 0)),
-        (b"123456", b"323456", 3, 3, (1, 1)),
-        (b"123456", b"3123456", 3, 3, (0, 1)),
-        (b"3123456", b"123456", 3, 3, (1, 0)),
-        (b"123456", b"111111", 3, 3, (6, 6)),
-        (b"123456", b"1111111", 3, 3, (6, 7)),
-        (b"1234567", b"111111", 3, 3, (7, 6)),
-    ],
-)
-def test_range_diff(
-    data_0: bytes,
-    data_1: bytes,
-    max_diff_length,
-    min_length_for_fit,
-    true_res: Tuple[int, int],
-):
-    dg = DeltaGenerator(
-        data_0,
-        data_1,
-        max_diff_length=max_diff_length,
-        min_length_for_fit=min_length_for_fit,
-    )
-    assert dg.range_diff(data_0, data_1) == true_res

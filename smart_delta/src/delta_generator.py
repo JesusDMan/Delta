@@ -1,6 +1,6 @@
 from typing import Tuple, List, Optional, Union, Callable, Any, Iterable
 
-from smart_delta.src import INSERTION_MARK, DELETION_MARK, REPLACEMENT_MARK, ENCODING
+from smart_delta.src import INSERTION_MARK, DELETION_MARK, REPLACEMENT_MARK, ENCODING, delta_utils
 from smart_delta.src.delta_element import DeltaElement
 
 
@@ -44,9 +44,11 @@ class DeltaGenerator:
             if self.data_0[index_0] != self.data_1[index_1]:
                 diff_beginning_index_0 = index_0
                 diff_beginning_index_1 = index_1
-                diff_ending_0, diff_ending_1 = self.range_diff(
-                    self.data_0[diff_beginning_index_0:],
-                    self.data_1[diff_beginning_index_1:],
+                diff_ending_0, diff_ending_1 = delta_utils.range_diff(
+                    data_0=self.data_0[diff_beginning_index_0:],
+                    data_1=self.data_1[diff_beginning_index_1:],
+                    max_diff_length=self.max_diff_length,
+                    min_length_for_fit=self.min_length_for_fit
                 )
                 diff_ending_0 += diff_beginning_index_0
                 diff_ending_1 += diff_beginning_index_1
@@ -119,42 +121,6 @@ class DeltaGenerator:
             )
         return delta_steps
 
-    def range_diff(self, data_0: bytes, data_1: bytes) -> Tuple[int, int]:
-        index_0_for_0, index_1_for_0 = 0, 0
-        index_0_for_1, index_1_for_1 = 0, 0
-
-        check_index_in_range: Callable[
-            [int, bytes], bool
-        ] = lambda index, data: index < self.max_diff_length and index < len(data)
-
-        check_if_fit_found: Callable[
-            [bytes, bytes, int, int], bool
-        ] = lambda index_0, index_1: (
-            data_0[index_0:][: self.min_length_for_fit]
-            == data_1[index_1:][: self.min_length_for_fit]
-        )
-
-        while index_0_for_0 < len(data_0) and index_1_for_1 < len(data_1):
-            while True:
-                if not check_index_in_range(
-                    index_1_for_0, data_1
-                ) and not check_index_in_range(index_0_for_1, data_0):
-                    break
-
-                if check_if_fit_found(index_0_for_0, index_1_for_0):
-                    return index_0_for_0, index_1_for_0
-
-                if check_if_fit_found(index_0_for_1, index_1_for_1):
-                    return index_0_for_1, index_1_for_1
-
-                index_1_for_0 += 1
-                index_0_for_1 += 1
-
-            index_0_for_0 += 1
-            index_1_for_0 = 0
-            index_0_for_1 = 0
-            index_1_for_1 += 1
-        return len(data_0), len(data_1)
 
     def __bytes__(self):
         delta_string = b""
